@@ -109,7 +109,6 @@ local function GiveMoney(ply, args)
 
         DarkRP.notify(ent2, 0, 4, DarkRP.getPhrase("has_given", ply:Nick(), DarkRP.formatMoney(amount)))
         DarkRP.notify(ply, 0, 4, DarkRP.getPhrase("you_gave", ent2:Nick(), DarkRP.formatMoney(amount)))
-        DarkRP.log(ply:Nick() .. " (" .. ply:SteamID() .. ") has given " .. DarkRP.formatMoney(amount) .. " to " .. ent2:Nick() .. " (" .. ent2:SteamID() .. ")")
     end)
 
     return ""
@@ -163,7 +162,6 @@ local function DropMoney(ply, args)
         DarkRP.placeEntity(moneybag, tr, ply)
 
         hook.Call("playerDroppedMoney", nil, ply, amount, moneybag)
-        DarkRP.log(ply:Nick() .. " (" .. ply:SteamID() .. ") has dropped " .. DarkRP.formatMoney(amount))
     end)
 
     return ""
@@ -268,9 +266,7 @@ local function ccSetMoney(ply, args)
     DarkRP.notify(target, 0, 4, DarkRP.getPhrase("x_set_your_money", ply:EntIndex() == 0 and "Console" or ply:Nick(), DarkRP.formatMoney(amount), ""))
 
     if ply:EntIndex() == 0 then
-        DarkRP.log("Console set " .. target:SteamName() .. "'s money to " .. DarkRP.formatMoney(amount), Color(30, 30, 30))
-    else
-        DarkRP.log(ply:Nick() .. " (" .. ply:SteamID() .. ") set " .. target:SteamName() .. "'s money to " .. DarkRP.formatMoney(amount), Color(30, 30, 30))
+
     end
 end
 DarkRP.definePrivilegedChatCommand("setmoney", "DarkRP_SetMoney", ccSetMoney)
@@ -297,9 +293,7 @@ local function ccAddMoney(ply, args)
 
         DarkRP.notify(target, 0, 4, DarkRP.getPhrase("x_set_your_money", ply:EntIndex() == 0 and "Console" or ply:Nick(), DarkRP.formatMoney(target:getDarkRPVar("money")), ""))
         if ply:EntIndex() == 0 then
-            DarkRP.log("Console added " .. DarkRP.formatMoney(amount) .. " to " .. target:SteamName() .. "'s wallet", Color(30, 30, 30))
-        else
-            DarkRP.log(ply:Nick() .. " (" .. ply:SteamID() .. ") added " .. DarkRP.formatMoney(amount) .. " to " .. target:SteamName() .. "'s wallet", Color(30, 30, 30))
+
         end
     else
         DarkRP.notify(ply, 1, 4, DarkRP.getPhrase("could_not_find", args[1]))

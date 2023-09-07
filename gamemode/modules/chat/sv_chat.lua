@@ -52,7 +52,6 @@ function DarkRP.definePrivilegedChatCommand(cmd, priv, callback, extraInfoTbl)
 end
 
 local function RP_PlayerChat(ply, text, teamonly)
-    DarkRP.log(ply:Nick() .. " (" .. ply:SteamID() .. "): " .. text)
     local callback = ""
     local DoSayFunc
     local groupSay = DarkRP.getChatCommand("g")

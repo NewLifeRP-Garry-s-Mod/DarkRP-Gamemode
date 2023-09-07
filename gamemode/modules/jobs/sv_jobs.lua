@@ -144,7 +144,6 @@ function meta:changeTeam(t, force, suppressNotification, ignoreMaxMembers)
 
     self:SetTeam(t)
     hook.Call("OnPlayerChangedTeam", GAMEMODE, self, prevTeam, t)
-    DarkRP.log(self:Nick() .. " (" .. self:SteamID() .. ") changed to " .. team.GetName(t), nil, Color(100, 0, 255))
     if self:InVehicle() then self:ExitVehicle() end
     if GAMEMODE.Config.norespawn and self:Alive() then
         if GAMEMODE.Config.keepPickedUp then
@@ -363,7 +362,6 @@ local function Demote(ply, args)
         if voteInfo then
             -- Vote has started
             DarkRP.notifyAll(0, 4, DarkRP.getPhrase("demote_vote_started", ply:Nick(), p:Nick()))
-            DarkRP.log(DarkRP.getPhrase("demote_vote_started", string.format("%s(%s)[%s]", ply:Nick(), ply:SteamID(), team.GetName(ply:Team())), string.format("%s(%s)[%s] for %s", p:Nick(), p:SteamID(), team.GetName(p:Team()), reason)), Color(255, 128, 255, 255))
             p.IsBeingDemoted = true
         end
         ply.LastVoteCop = CurTime()

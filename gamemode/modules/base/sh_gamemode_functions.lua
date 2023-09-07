@@ -1,7 +1,4 @@
 function GM:SetupMove(ply, mv, cmd)
-    if ply:isArrested() then
-        mv:SetMaxClientSpeed(self.Config.arrestspeed)
-    end
     return self.Sandbox.SetupMove(self, ply, mv, cmd)
 end
 
@@ -21,33 +18,9 @@ function GM:OnPlayerChangedTeam(ply, oldTeam, newTeam)
     if RPExtraTeams[newTeam] and RPExtraTeams[newTeam].OnPlayerChangedTeam then
         RPExtraTeams[newTeam].OnPlayerChangedTeam(ply, oldTeam, newTeam)
     end
-
-    if CLIENT then return end
-
-    local agenda = ply:getAgendaTable()
-
-    -- Remove agenda text when last manager left
-    if agenda and agenda.ManagersByKey[oldTeam] then
-        local found = false
-        for man, _ in pairs(agenda.ManagersByKey) do
-            if team.NumPlayers(man) > 0 then found = true break end
-        end
-        if not found then agenda.text = nil end
-    end
-
-    ply:setSelfDarkRPVar("agenda", agenda and agenda.text or nil)
 end
 
 hook.Add("loadCustomDarkRPItems", "CAMI privs", function()
-    CAMI.RegisterPrivilege{
-        Name = "DarkRP_SeeEvents",
-        MinAccess = "admin"
-    }
-
-    CAMI.RegisterPrivilege{
-        Name = "DarkRP_GetAdminWeapons",
-        MinAccess = "admin"
-    }
 
     CAMI.RegisterPrivilege{
         Name = "DarkRP_SetDoorOwner",

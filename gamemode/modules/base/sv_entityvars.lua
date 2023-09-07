@@ -160,11 +160,6 @@ local function setRPName(ply, args)
             nick = ply:Nick()
         end
         DarkRP.notify(target, 0, 4, DarkRP.getPhrase("x_set_your_name", nick, name))
-        if ply:EntIndex() == 0 then
-            DarkRP.log("Console set " .. target:SteamName() .. "'s name to " .. name, Color(30, 30, 30))
-        else
-            DarkRP.log(ply:Nick() .. " (" .. ply:SteamID() .. ") set " .. target:SteamName() .. "'s name to " .. name, Color(30, 30, 30))
-        end
     end)
 end
 DarkRP.definePrivilegedChatCommand("forcerpname", "DarkRP_AdminCommands", setRPName)
@@ -175,7 +170,6 @@ local function freerpname(ply, args)
     MySQLite.query(("UPDATE darkrp_player SET rpname = NULL WHERE rpname = %s"):format(MySQLite.SQLStr(name)))
 
     local nick = IsValid(ply) and ply:Nick() or "Console"
-    DarkRP.log(("%s has freed the rp name '%s'"):format(nick, name), Color(30, 30, 30))
     DarkRP.notify(ply, 0, 4, ("'%s' has been freed"):format(name))
 end
 DarkRP.definePrivilegedChatCommand("freerpname", "DarkRP_AdminCommands", freerpname)
