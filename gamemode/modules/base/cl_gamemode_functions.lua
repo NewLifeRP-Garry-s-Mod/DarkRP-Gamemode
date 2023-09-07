@@ -29,30 +29,10 @@ function GM:ShowSpare2()
     DarkRP.toggleF4Menu()
 end
 
-function GM:PlayerStartVoice(ply)
-    if ply == LocalPlayer() then
-        ply.DRPIsTalking = true
-        return -- Not the original rectangle for yourself! ugh!
-    end
-    self.Sandbox.PlayerStartVoice(self, ply)
-end
-
-function GM:PlayerEndVoice(ply)
-    if ply == LocalPlayer() then
-        ply.DRPIsTalking = false
-        return
-    end
-
-    self.Sandbox.PlayerEndVoice(self, ply)
-end
-
 function GM:OnPlayerChat()
 end
 
 local FKeyBinds = {
-    ["gm_showhelp"] = "ShowHelp",
-    ["gm_showteam"] = "ShowTeam",
-    ["gm_showspare1"] = "ShowSpare1",
     ["gm_showspare2"] = "ShowSpare2"
 }
 
@@ -64,7 +44,7 @@ function GM:PlayerBindPress(ply, bind, pressed)
         hook.Call(FKeyBinds[bnd], GAMEMODE)
     end
 
-    if not self.Config.deadvoice and not ply:Alive() and string.find(string.lower(bind), "voicerecord") then return true end
+    if ply:Alive() and string.find(string.lower(bind), "voicerecord") then return true end
 end
 
 function GM:InitPostEntity()

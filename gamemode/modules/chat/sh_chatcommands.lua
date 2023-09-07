@@ -69,24 +69,6 @@ DarkRP.getIncompleteChatCommands = fn.Curry(fn.Filter, 3)(fn.Compose{fn.Not, che
 Chat commands
 ---------------------------------------------------------------------------]]
 DarkRP.declareChatCommand{
-    command = "pm",
-    description = "Send a private message to someone.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
-    command = "w",
-    description = "Say something in whisper voice.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
-    command = "y",
-    description = "Yell something out loud.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
     command = "me",
     description = "Chat roleplay to say you're doing things that you can't show otherwise.",
     delay = 1.5
@@ -107,36 +89,5 @@ DarkRP.declareChatCommand{
 DarkRP.declareChatCommand{
     command = "ooc",
     description = "Global server chat.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
-    command = "broadcast",
-    description = "Broadcast something as a mayor.",
-    delay = 1.5,
-    condition = plyMeta.isMayor
-}
-
-DarkRP.declareChatCommand{
-    command = "channel",
-    description = "Tune into a radio channel.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
-    command = "radio",
-    description = "Say something through the radio.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
-    command = "g",
-    description = "Group chat.",
-    delay = 1.5
-}
-
-DarkRP.declareChatCommand{
-    command = "credits",
-    description = "Send the DarkRP credits to someone.",
     delay = 1.5
 }

@@ -167,41 +167,5 @@ local function loadChatReceivers()
             string.find(string.lower(ply:SteamName()), text[2], 1, true) ~= nil or
             string.lower(ply:SteamID()) == text[2]
     end)
-
-    --[[---------------------------------------------------------------------------
-        Voice chat receivers
-        ---------------------------------------------------------------------------]]
-    local voiceDistance = GM.Config.voiceDistance * GM.Config.voiceDistance
-    DarkRP.addChatReceiver("speak", DarkRP.getPhrase("speak"), function(ply)
-        if not LocalPlayer().DRPIsTalking then return nil end
-        if LocalPlayer():GetPos():DistToSqr(ply:GetPos()) > voiceDistance then return false end
-
-        return not GAMEMODE.Config.dynamicvoice or ply:isInRoom()
-    end)
 end
 hook.Add("loadCustomDarkRPItems", "loadChatListeners", loadChatReceivers)
-
---[[---------------------------------------------------------------------------
-Called when the player starts using their voice
----------------------------------------------------------------------------]]
-local function startFindVoice(ply)
-    if ply ~= LocalPlayer() then return end
-
-    local shouldDraw = hook.Call("HUDShouldDraw", GAMEMODE, "DarkRP_ChatReceivers")
-    if shouldDraw == false then return end
-
-    currentConfig = receiverConfigs["speak"]
-    hook.Add("Think", "DarkRP_chatRecipients", chatGetRecipients)
-    hook.Add("HUDPaint", "DarkRP_DrawChatReceivers", drawChatReceivers)
-end
-hook.Add("PlayerStartVoice", "DarkRP_VoiceChatReceiverFinder", startFindVoice)
-
---[[---------------------------------------------------------------------------
-Called when the player stops using their voice
----------------------------------------------------------------------------]]
-local function stopFindVoice(ply)
-    if ply ~= LocalPlayer() then return end
-
-    stopFind()
-end
-hook.Add("PlayerEndVoice", "DarkRP_VoiceChatReceiverFinder", stopFindVoice)

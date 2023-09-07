@@ -186,34 +186,6 @@ function meta:getEyeSightHitEntity(searchDistance, hitDistance, filter)
 end
 
 --[[---------------------------------------------------------------------------
-Print the currently available vehicles
----------------------------------------------------------------------------]]
-local function GetAvailableVehicles(ply)
-    if SERVER and IsValid(ply) and not ply:IsAdmin() then return end
-    local print = SERVER and ServerLog or Msg
-
-    print(DarkRP.getPhrase("rp_getvehicles") .. "\n")
-    for k in pairs(DarkRP.getAvailableVehicles()) do
-        print("\"" .. k .. "\"" .. "\n")
-    end
-end
-if SERVER then
-    concommand.Add("rp_getvehicles_sv", GetAvailableVehicles)
-else
-    concommand.Add("rp_getvehicles", GetAvailableVehicles)
-end
-
---[[---------------------------------------------------------------------------
-Whether a player has a DarkRP privilege
----------------------------------------------------------------------------]]
-function meta:hasDarkRPPrivilege(priv)
-    if FAdmin then
-        return FAdmin.Access.PlayerHasPrivilege(self, priv)
-    end
-    return self:IsAdmin()
-end
-
---[[---------------------------------------------------------------------------
 Convenience function to return the players sorted by name
 ---------------------------------------------------------------------------]]
 function DarkRP.nickSortedPlayers()

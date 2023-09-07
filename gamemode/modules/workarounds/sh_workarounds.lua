@@ -1,18 +1,5 @@
 -- Shared part
 
-function DarkRP.getAvailableVehicles()
-    local vehicles = list.Get("Vehicles")
-    for _, v in pairs(list.Get("SCarsList")) do
-        vehicles[v.PrintName] = {
-            Name = v.PrintName,
-            Class = v.ClassName,
-            Model = v.CarModel
-        }
-    end
-
-    return vehicles
-end
-
 local function argError(Val, iArg, sType)
     error(string.format("bad argument #%u to '%s' (%s expected, got %s)", iArg, debug.getinfo(2, "n").name, sType, type(Val)), 3)
 end

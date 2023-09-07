@@ -14,10 +14,6 @@ function GM:getDoorCost(ply, ent)
     return GAMEMODE.Config.doorcost ~= 0 and GAMEMODE.Config.doorcost or 30
 end
 
-function GM:getVehicleCost(ply, ent)
-    return GAMEMODE.Config.vehiclecost ~= 0 and GAMEMODE.Config.vehiclecost or 40
-end
-
 function GM:canDemote(ply, target, reason)
 
 end
@@ -110,24 +106,11 @@ function GM:EntityRemoved(ent)
     if ent.isKeysOwnable and ent:isKeysOwnable() then ent:removeDoorData() end
 end
 
-function GM:ShowSpare1(ply)
-    local jobTable = ply:getJobTable()
-    if jobTable.ShowSpare1 then
-        return jobTable.ShowSpare1(ply)
-    end
-end
-
 function GM:ShowSpare2(ply)
     local jobTable = ply:getJobTable()
     if jobTable.ShowSpare2 then
         return jobTable.ShowSpare2(ply)
     end
-end
-
-function GM:ShowTeam(ply)
-end
-
-function GM:ShowHelp(ply)
 end
 
 function GM:KeyPress(ply, code)
@@ -169,8 +152,6 @@ function GM:PlayerDeath(ply, weapon, killer)
         KillerName = "Themself"
         WeaponName = "suicide trick"
     end
-
-    DarkRP.(ply:Nick() .. " was killed by " .. KillerName .. " with a " .. WeaponName, Color(255, 190, 0))
 end
 
 function GM:PlayerCanPickupWeapon(ply, weapon)
@@ -260,7 +241,7 @@ function GM:PlayerInitialSpawn(ply)
     self.Sandbox.PlayerInitialSpawn(self, ply)
 
     local sid = ply:SteamID()
-    
+
     ply:setDarkRPVarsAttribute()
     ply:restorePlayerData()
     initPlayer(ply)
