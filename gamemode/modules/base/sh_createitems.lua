@@ -740,7 +740,6 @@ hook.Add("loadCustomDarkRPItems", "mergeCategories", function()
     mergeCategories(shipments, "shipments", "your custom shipments")
     mergeCategories(guns, "weapons", "your custom weapons")
     mergeCategories(CustomVehicles, "vehicles", "your custom vehicles")
-    mergeCategories(GAMEMODE.AmmoTypes, "ammo", "your custom ammo")
 
     categoriesMerged = true
 end)

@@ -129,94 +129,6 @@ local function GunLicense()
     end
 end
 
-local agendaText
-local function Agenda(gamemodeTable)
-    local shouldDraw = hook.Call("HUDShouldDraw", gamemodeTable, "DarkRP_Agenda")
-    if shouldDraw == false then return end
-
-    local agenda = localplayer:getAgendaTable()
-    if not agenda then return end
-    agendaText = agendaText or DarkRP.textWrap((localplayer:getDarkRPVar("agenda") or ""):gsub("//", "\n"):gsub("\\n", "\n"), "DarkRPHUD1", 440)
-
-    draw.RoundedBox(10, 10, 10, 460, 110, colors.gray1)
-    draw.RoundedBox(10, 12, 12, 456, 106, colors.gray2)
-    draw.RoundedBox(10, 12, 12, 456, 20, colors.darkred)
-
-    draw.DrawNonParsedText(agenda.Title, "DarkRPHUD1", 30, 12, colors.red, 0)
-    draw.DrawNonParsedText(agendaText, "DarkRPHUD1", 30, 35, colors.white, 0)
-end
-
-hook.Add("DarkRPVarChanged", "agendaHUD", function(ply, var, _, new)
-    if ply ~= localplayer then return end
-    if var == "agenda" and new then
-        agendaText = DarkRP.textWrap(new:gsub("//", "\n"):gsub("\\n", "\n"), "DarkRPHUD1", 440)
-    else
-        agendaText = nil
-    end
-
-    if var == "salary" then
-        salaryText = DarkRP.getPhrase("salary", DarkRP.formatMoney(new), "")
-    end
-
-    if var == "job" or var == "money" then
-        JobWalletText = string.format("%s\n%s",
-            DarkRP.getPhrase("job", var == "job" and new or localplayer:getDarkRPVar("job") or ""),
-            DarkRP.getPhrase("wallet", var == "money" and DarkRP.formatMoney(new) or DarkRP.formatMoney(localplayer:getDarkRPVar("money")), "")
-        )
-    end
-end)
-
-local VoiceChatTexture = surface.GetTextureID("voice/icntlk_pl")
-local function DrawVoiceChat(gamemodeTable)
-    local shouldDraw = hook.Call("HUDShouldDraw", gamemodeTable, "DarkRP_VoiceChat")
-    if shouldDraw == false then return end
-
-    if localplayer.DRPIsTalking then
-        local _, chboxY = chat.GetChatBoxPos()
-
-        local Rotating = math.sin(CurTime() * 3)
-        local backwards = 0
-
-        if Rotating < 0 then
-            Rotating = 1 - (1 + Rotating)
-            backwards = 180
-        end
-
-        surface.SetTexture(VoiceChatTexture)
-        surface.SetDrawColor(ConVars.Healthforeground)
-        surface.DrawTexturedRectRotated(Scrw - 100, chboxY, Rotating * 96, 96, backwards)
-    end
-end
-
-local function LockDown(gamemodeTable)
-    local chbxX, chboxY = chat.GetChatBoxPos()
-    if GetGlobalBool("DarkRP_LockDown") then
-        local shouldDraw = hook.Call("HUDShouldDraw", gamemodeTable, "DarkRP_LockdownHUD")
-        if shouldDraw == false then return end
-        local cin = (math.sin(CurTime()) + 1) / 2
-        local chatBoxSize = math.floor(Scrh / 4)
-        draw.DrawNonParsedText(DarkRP.getPhrase("lockdown_started"), "ScoreboardSubtitle", chbxX, chboxY + chatBoxSize, Color(cin * 255, 0, 255 - (cin * 255), 255), TEXT_ALIGN_LEFT)
-    end
-end
-
-local Arrested = function() end
-
-usermessage.Hook("GotArrested", function(msg)
-    local StartArrested = CurTime()
-    local ArrestedUntil = msg:ReadFloat()
-
-    Arrested = function(gamemodeTable)
-        local shouldDraw = hook.Call("HUDShouldDraw", gamemodeTable, "DarkRP_ArrestedHUD")
-        if shouldDraw == false then return end
-
-        if CurTime() - StartArrested <= ArrestedUntil and localplayer:getDarkRPVar("Arrested") then
-            draw.DrawNonParsedText(DarkRP.getPhrase("youre_arrested", math.ceil((ArrestedUntil - (CurTime() - StartArrested)) * 1 / game.GetTimeScale())), "DarkRPHUD1", Scrw / 2, Scrh - Scrh / 12, colors.white, 1)
-        elseif not localplayer:getDarkRPVar("Arrested") then
-            Arrested = function() end
-        end
-    end
-end)
-
 local AdminTell = function() end
 
 usermessage.Hook("AdminTell", function(msg)
@@ -253,11 +165,8 @@ local function DrawHUD(gamemodeTable)
         DrawInfo()
         GunLicense()
     end
-    Agenda(gamemodeTable)
     DrawVoiceChat(gamemodeTable)
-    LockDown(gamemodeTable)
 
-    Arrested(gamemodeTable)
     AdminTell()
 end
 
