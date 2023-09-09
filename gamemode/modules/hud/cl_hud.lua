@@ -101,50 +101,15 @@ local function DrawHealth()
     end
 end
 
-local salaryText, JobWalletText
+local JobWalletText
 local function DrawInfo()
-    salaryText = salaryText or DarkRP.getPhrase("salary", DarkRP.formatMoney(localplayer:getDarkRPVar("salary")), "")
-
     JobWalletText = JobWalletText or string.format("%s\n%s",
-        DarkRP.getPhrase("job", localplayer:getDarkRPVar("job") or ""),
         DarkRP.getPhrase("wallet", DarkRP.formatMoney(localplayer:getDarkRPVar("money")), "")
     )
-
-    draw.DrawNonParsedText(salaryText, "DarkRPHUD2", RelativeX + 5, RelativeY - HUDHeight + 6, ConVars.salary1, 0)
-    draw.DrawNonParsedText(salaryText, "DarkRPHUD2", RelativeX + 4, RelativeY - HUDHeight + 5, ConVars.salary2, 0)
-
-    surface.SetFont("DarkRPHUD2")
-    local _, h = surface.GetTextSize(salaryText)
 
     draw.DrawNonParsedText(JobWalletText, "DarkRPHUD2", RelativeX + 5, RelativeY - HUDHeight + h + 6, ConVars.Job1, 0)
     draw.DrawNonParsedText(JobWalletText, "DarkRPHUD2", RelativeX + 4, RelativeY - HUDHeight + h + 5, ConVars.Job2, 0)
 end
-
-local Page = Material("icon16/page_white_text.png")
-local function GunLicense()
-    if localplayer:getDarkRPVar("HasGunlicense") then
-        surface.SetMaterial(Page)
-        surface.SetDrawColor(255, 255, 255, 255)
-        surface.DrawTexturedRect(RelativeX + HUDWidth, Scrh - 34, 32, 32)
-    end
-end
-
-local AdminTell = function() end
-
-usermessage.Hook("AdminTell", function(msg)
-    timer.Remove("DarkRP_AdminTell")
-    local Message = msg:ReadString()
-
-    AdminTell = function()
-        draw.RoundedBox(4, 10, 10, Scrw - 20, 110, colors.darkblack)
-        draw.DrawNonParsedText(DarkRP.getPhrase("listen_up"), "GModToolName", Scrw / 2 + 10, 10, colors.white, 1)
-        draw.DrawNonParsedText(Message, "ChatFont", Scrw / 2 + 10, 90, colors.brightred, 1)
-    end
-
-    timer.Create("DarkRP_AdminTell", 10, 1, function()
-        AdminTell = function() end
-    end)
-end)
 
 --[[---------------------------------------------------------------------------
 Drawing the HUD elements such as Health etc.
@@ -163,11 +128,8 @@ local function DrawHUD(gamemodeTable)
         draw.RoundedBox(6, 0, Scrh - HUDHeight, HUDWidth, HUDHeight, ConVars.background)
         DrawHealth()
         DrawInfo()
-        GunLicense()
     end
     DrawVoiceChat(gamemodeTable)
-
-    AdminTell()
 end
 
 --[[---------------------------------------------------------------------------
@@ -180,15 +142,10 @@ plyMeta.drawPlayerInfo = plyMeta.drawPlayerInfo or function(self)
 
     pos.z = pos.z + 10 -- The position we want is a bit above the position of the eyes
     pos = pos:ToScreen()
-    if not self:getDarkRPVar("wanted") then
-        -- Move the text up a few pixels to compensate for the height of the text
-        pos.y = pos.y - 50
-    end
 
     if GAMEMODE.Config.showname then
-        local nick, plyTeam = self:Nick(), self:Team()
+        local nick = self:Nick()
         draw.DrawNonParsedText(nick, "DarkRPHUD2", pos.x + 1, pos.y + 1, colors.black, 1)
-        draw.DrawNonParsedText(nick, "DarkRPHUD2", pos.x, pos.y, RPExtraTeams[plyTeam] and RPExtraTeams[plyTeam].color or team.GetColor(plyTeam) , 1)
     end
 
     if GAMEMODE.Config.showhealth then
@@ -196,114 +153,7 @@ plyMeta.drawPlayerInfo = plyMeta.drawPlayerInfo or function(self)
         draw.DrawNonParsedText(health, "DarkRPHUD2", pos.x + 1, pos.y + 21, colors.black, 1)
         draw.DrawNonParsedText(health, "DarkRPHUD2", pos.x, pos.y + 20, colors.white1, 1)
     end
-
-    if GAMEMODE.Config.showjob then
-        local teamname = self:getDarkRPVar("job") or team.GetName(self:Team())
-        draw.DrawNonParsedText(teamname, "DarkRPHUD2", pos.x + 1, pos.y + 41, colors.black, 1)
-        draw.DrawNonParsedText(teamname, "DarkRPHUD2", pos.x, pos.y + 40, colors.white1, 1)
-    end
-
-    if self:getDarkRPVar("HasGunlicense") then
-        surface.SetMaterial(Page)
-        surface.SetDrawColor(255,255,255,255)
-        surface.DrawTexturedRect(pos.x-16, pos.y + 60, 32, 32)
-    end
 end
-
--- Draw wanted information above a player's head
--- This syntax allows for easy overriding
-plyMeta.drawWantedInfo = plyMeta.drawWantedInfo or function(self)
-    if not self:Alive() then return end
-
-    local pos = self:EyePos()
-    if not pos:isInSight({localplayer, self}) then return end
-
-    pos.z = pos.z + 10
-    pos = pos:ToScreen()
-
-    if GAMEMODE.Config.showname then
-        local nick, plyTeam = self:Nick(), self:Team()
-        draw.DrawNonParsedText(nick, "DarkRPHUD2", pos.x + 1, pos.y + 1, colors.black, 1)
-        draw.DrawNonParsedText(nick, "DarkRPHUD2", pos.x, pos.y, RPExtraTeams[plyTeam] and RPExtraTeams[plyTeam].color or team.GetColor(plyTeam) , 1)
-    end
-
-    local wantedText = DarkRP.getPhrase("wanted", tostring(self:getDarkRPVar("wantedReason")))
-
-    draw.DrawNonParsedText(wantedText, "DarkRPHUD2", pos.x, pos.y - 40, colors.white1, 1)
-    draw.DrawNonParsedText(wantedText, "DarkRPHUD2", pos.x + 1, pos.y - 41, colors.red, 1)
-end
-
---[[---------------------------------------------------------------------------
-The Entity display: draw HUD information about entities
----------------------------------------------------------------------------]]
-local function DrawEntityDisplay(gamemodeTable)
-    local shouldDraw, players = hook.Call("HUDShouldDraw", gamemodeTable, "DarkRP_EntityDisplay")
-    if shouldDraw == false then return end
-
-    local shootPos = localplayer:GetShootPos()
-    local aimVec = localplayer:GetAimVector()
-
-    for _, ply in ipairs(players or player.GetAll()) do
-        if not IsValid(ply)
-           or ply == localplayer
-           or not ply:Alive()
-           or ply:GetNoDraw()
-           or ply:IsDormant()
-           or ply:GetColor().a == 0 and (ply:GetRenderMode() == RENDERMODE_TRANSALPHA or ply:GetRenderMode() == RENDERMODE_TRANSCOLOR) then
-           continue
-        end
-        local hisPos = ply:GetShootPos()
-        if ply:getDarkRPVar("wanted") then ply:drawWantedInfo() end
-
-        if gamemodeTable.Config.globalshow then
-            ply:drawPlayerInfo()
-        -- Draw when you're (almost) looking at him
-        elseif hisPos:DistToSqr(shootPos) < 160000 then
-            local pos = hisPos - shootPos
-            local unitPos = pos:GetNormalized()
-            if unitPos:Dot(aimVec) > 0.95 then
-                local trace = util.QuickTrace(shootPos, pos, localplayer)
-                if trace.Hit and trace.Entity ~= ply then
-                    -- When the trace says you're directly looking at a
-                    -- different player, that means you can draw /their/ info
-                    if trace.Entity:IsPlayer() then
-                        trace.Entity:drawPlayerInfo()
-                    end
-                    break
-                end
-                ply:drawPlayerInfo()
-            end
-        end
-    end
-
-    local ent = localplayer:GetEyeTrace().Entity
-
-    if IsValid(ent) and ent:isKeysOwnable() and ent:GetPos():DistToSqr(localplayer:GetPos()) < 40000 then
-        ent:drawOwnableInfo()
-    end
-end
-
---[[---------------------------------------------------------------------------
-Drawing death notices
----------------------------------------------------------------------------]]
-function GM:DrawDeathNotice(x, y)
-    if not self.Config.showdeaths then return end
-    self.Sandbox.DrawDeathNotice(self, x, y)
-end
-
---[[---------------------------------------------------------------------------
-Display notifications
----------------------------------------------------------------------------]]
-local notificationSound = GM.Config.notificationSound
-local function DisplayNotify(msg)
-    local txt = msg:ReadString()
-    GAMEMODE:AddNotify(txt, msg:ReadShort(), msg:ReadLong())
-    surface.PlaySound(notificationSound)
-
-    -- Log to client console
-    MsgC(Color(255, 20, 20, 255), "[DarkRP] ", Color(200, 200, 200, 255), txt, "\n")
-end
-usermessage.Hook("_Notify", DisplayNotify)
 
 --[[---------------------------------------------------------------------------
 Remove some elements from the HUD in favour of the DarkRP HUD
